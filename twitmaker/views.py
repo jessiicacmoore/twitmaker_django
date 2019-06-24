@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from twitmaker.models import Tweet
 from twitmaker.forms import TweetForm
@@ -14,7 +14,11 @@ def create_tweet(request):
     tweet = form.instance
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect('/')
+        data = {
+            'message': tweet.message,
+            'created_at': tweet.created_at,
+        }
+        return JsonResponse(data);
     else:
         context = {'tweets': Tweet.objects.all(), 'form': form}
         return render(request, 'index.html', context)
